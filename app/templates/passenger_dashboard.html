@@ -1,0 +1,56 @@
+<!-- Passenger Dashboard HTML - Subclass From Passenger Dashboard Template -->
+
+{% extends "pass_dash_template.html" %}
+{% block card %}
+
+  <!-- Left Navigation Bar -->
+  <div class="navbar-default sidebar" role="navigation">
+      <div class="sidebar-nav navbar-collapse slimscrollsidebar">
+          <ul class="nav" id="side-menu">
+
+              <!-- Link to Passenger Breezecards -->
+              <li style="padding: 10px 0 0;">
+                  <a href="{{ url_for('pass_breezecards', username=username) }}" class="waves-effect">
+                    <i class="fa fa-credit-card fa-fw" aria-hidden="true"></i>
+                    <span class="hide-menu">Breeze Cards</span>
+                  </a>
+              </li>
+
+              <!-- Link to Passenger Trip History -->
+              <li>
+                  <a href="{{ url_for('view_trips', username=username) }}" class="waves-effect">
+                    <i class="fa fa-calendar fa-fw" aria-hidden="true"></i>
+                    <span class="hide-menu">View Trip History</span>
+                  </a>
+              </li>
+
+              <!-- Link to Passenger Take a Trip -->
+              <li>
+                  <a href="{{ url_for('take_trip', username=username) }}" class="waves-effect">
+                    <i class="fa fa-train fa-fw" aria-hidden="true"></i>
+                    <span class="hide-menu">Take a Trip</span>
+                  </a>
+              </li>
+
+              <!-- Link to Logout -->
+              <li>
+                  <a href="{{ url_for('login') }}" class="waves-effect">
+                    <i class="fa fa-arrow-left fa-fw" aria-hidden="true"></i>
+                    <span class="hide-menu">Logout</span>
+                  </a>
+              </li>
+
+          </ul>
+
+      </div>
+  </div>
+
+  <!-- Page Content -->
+  <div id="page-wrapper">
+      <div class="container-fluid">
+          <div class="row bg-title"></div>
+          <footer class="footer text-center"></footer>
+      </div>
+  </div>
+
+{% endblock %}

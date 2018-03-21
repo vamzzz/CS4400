@@ -1,0 +1,44 @@
+{% extends "admin_dashboard.html" %}
+{% block card %}
+<div id="wrapper">
+    <!-- Left navbar-header end -->
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <!-- /row -->
+            <div class="row">
+
+                    <div class="white-box">
+                        <h3 class="box-title">{{station_info[1]}}</h3>
+                        <h2 class="box-title">{{station_info[0]}}</h2>
+                        {% if error %}
+                          <p class=error><strong>Error:</strong> {{ error }}
+                        {% endif %}
+                        <div class = "form">
+                                <form method="POST" id="viewStationForm">
+                                    <!-- <label>Current Fare is {{ station_info[2] }}</label><input type="number" placeholder="New Fare" name="new_fare" id="new_fare"/> -->
+                                    <label>Current Fare is {{ station_info[2] }}</label><input type="number" placeholder="New Fare" name="new_fare" id="new_fare" class="validate show-if-active" min="0.00" max="50.00" step="0.01" title="Value Must Be Between 0.00 And 50.00"/>
+                                    <label>{{ nearest_intersection }}</label>
+                                    <input type="checkbox" name="station_status" value="0">Open Station: When checked, passengers can enter at this station
+                                    <!-- <input type="submit" value = "Update Changes" name = "updateChanges" class="updateChanges" id="updateChanges"/> -->
+                                    <button id="update_status" onclick="location.href='/station_management">Update Changes</button>
+                                </form>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+    </div>
+    <!-- /#page-wrapper -->
+
+</div>
+
+
+  <script type="text/javascript">
+
+
+
+  </script>
+{% endblock %}

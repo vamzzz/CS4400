@@ -1,0 +1,185 @@
+{% extends "admin_dashboard.html" %}
+{% block card %}
+<div id="wrapper">
+
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="white-box">
+                        <h3 class="box-title">Search Filter</h3>
+                        <i class="box-title">{{filter_name}}</i><br>
+                        {% if error %}
+                            <p class=error><strong>Error:</strong> {{ error }}
+                        {% endif %}
+                        <form method="POST" id="filtering">
+                            <select name="filter">
+                                <option value="station_name_abc">Station Name Alphabetically</option>
+                                <option value="station_name_xyz">Station Name Reverse Alphabetical</option>
+                                <option value="stopid_abc">StopId Alphabetically</option>
+                                <option value="stopid_xyz">StopId Reverse Alphabetical</option>
+                                <option value="fare_low">Fare Lowest to Highest</option>
+                                <option value="fare_high">Fare Highest to Lowest</option>
+                                <option value="status_open">Status: Open -> Closed</option>
+                                <option value="status_closed">Status: Closed -> Open</option>
+                            </select><br><br><br>
+                            <input type="submit" value="Apply Filter" name="station_filter" class="station_filter" id="station_filter"/>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- /.row -->
+            <!-- /row -->
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="white-box">
+                        <h3 class="box-title">Station Management</h3>
+                        {% if error %}
+                          <p class=error><strong>Error:</strong> {{ error }}
+                        {% endif %}
+                        <div class="table-responsive" id="station_view">
+                            <table class="table" id="table">
+                                <thead>
+
+                                    <tr>
+                                        <th>Select</th>
+                                        <th>Station Name</th>
+                                        <th>Stop ID</th>
+                                        <th>Fare</th>
+                                        <th>Status</th>
+                                    </tr>
+
+                                </thead>
+                            </table>
+                        </div>
+
+                        <div classs="table-responsive" id="station_view" style="max-height:300px; overflow-y:scroll">
+                          <table class="table" id="table">
+                                <tbody>
+                                  {% for item in station_listing %}
+                                    <tr>
+                                      <td><input type="radio" name="station_select" value ="{{item[0]}}" id ="station_select+{{item[0]}}" style="margin-right:15px" onclick="check()"</td>
+                                      <td id="station_name">{{ item[1] }}</td>
+                                      <td id="stop_id">{{ item[0] }}</td>
+                                      <td id="fare">{{ item[2] }}</td>
+                                      <td id="status">{{ item[5] }}</td>
+                                    </tr>
+                                  {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <button class="top-button" name="newStation" id="newStation">Create New Station</button><br/>
+                        <button class="bottom-button" type="submit" id="viewStation" disabled="disabled" onclick="viewStation()">View Station</button>
+                        <script>
+                            function check() {
+                                var ele = document.getElementsByName("station_select");
+                                var flag = 0;
+                                for (var i = 0; i<ele.length;i++) {
+                                    if(ele[i].checked) {
+                                        flag = 1;
+                                    }
+                                }
+                                if(flag==1) {
+                                    document.getElementById("viewStation").disabled=false;
+                                }
+                            }
+                        </script>
+
+
+                    </div>
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+    </div>
+    <!-- /#page-wrapper -->
+</div>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+<!-- Create New Station Modal -->
+<div id="newStationModal" class="modal">
+
+
+  <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="login-page">
+            <div class="form">
+                <form method="POST" id="newStationForm">
+                    <input type="text" placeholder="Station Name" name="station_name" id="station_name" class="validate" required="" aria-required="true"/>
+                    <input type="text" placeholder="Stop ID" name="stop_id" id="stop_id" class="validate" required="" aria-required="true"/>
+                    <input type="number" placeholder="Entry Fare" name="entry_fare" id="entry_fare" class="validate show-if-active" min="0.00" max="50.00" step="0.01" title="Value Must Be Between 0.00 And 50.00"/>
+                    <!-- <input type="text" placeholder="Entry Fare" name="entry_fare" id="entry_fare" class="validate" required="" aria-required="true" onkeypress='return event.charCode >= 48 && event.charCode <= 57'/> -->
+                    <label style="float:left; margin-bottom:15px"><input type="radio" id="bus_station" name="station_type" value="bus" style="margin:0px 15px 0px 0px; width:auto;" required="">Bus Station</label><br/>
+                    <label style="float:left; margin-bottom:15px"><input type="radio" id="train_station" name="station_type" value="train" style="margin:0px 15px 0px 0px; width:auto;" required="">Train Station</label><br/>
+                    <input type="text" placeholder="Enter The Nearest Intersection." name="nearest_intersection" id="nearest_intersection" class="validate show-if-active" title="Nearest Intersection"/>
+                    <script>
+                        $(document).ready(function(){
+                            $("#bus_station").click(function(){
+                                if ($(this).is(":checked")) {
+                                $("#nearest_intersection").show("fast","linear").prop("required", true);
+                                }
+                            });
+                        });
+                        $(document).ready(function(){
+                            $("#train_station").click(function(){
+                                if ($(this).is(":checked")) {
+                                $("#nearest_intersection").hide("fast","linear").prop("required", false);
+                                }
+                            });
+                        });
+                    </script>
+                    <input type="checkbox" name="station_status" value="0">Open Station: When checked, passengers can enter at this station
+                    <input type="submit" value='Create Station' name="newStation" class="newStation" id="newStation"/>
+                    <!-- <button id="create_station" onclick="location.href='/station_management'">Create Station</button> -->
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+  <script type="text/javascript">
+
+    function viewStation() {
+        var stop_id = "";
+        var radios = document.getElementsByName('station_select');
+        for ( var i = 0; i < radios.length; i++) {
+            if(radios[i].checked) {
+                stop_id = radios[i].value;
+            }
+        }
+        var url = '/view_station/' + stop_id
+        window.location.href = url
+
+    }
+
+    // Get the create new station modal
+    var modal = document.getElementById('newStationModal');
+
+    // Get the button that opens the modal
+    var btn = document.getElementById("newStation");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks on the button, open the modal
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+  </script>
+{% endblock %}

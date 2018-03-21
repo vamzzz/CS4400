@@ -1,0 +1,158 @@
+<!-- View Trips Page HTML - Subclass From Passenger Dashboard Template -->
+
+{% extends "pass_dash_template.html" %}
+{% block card %}
+
+  <div class="navbar-default sidebar" role="navigation">
+      <div class="sidebar-nav navbar-collapse slimscrollsidebar">
+          <ul class="nav" id="side-menu">
+
+              <!-- Link to Passenger Breezecards -->
+              <li style="padding: 10px 0 0;">
+                  <a href="{{ url_for('pass_breezecards', username=username) }}" class="waves-effect">
+                    <i class="fa fa-credit-card fa-fw" aria-hidden="true"></i>
+                    <span class="hide-menu">Breeze Cards</span>
+                  </a>
+              </li>
+
+              <!-- Link to Passenger Trip History -->
+              <li>
+                  <a href="{{ url_for('view_trips', username=username) }}" class="waves-effect">
+                    <i class="fa fa-calendar fa-fw" aria-hidden="true"></i>
+                    <span class="hide-menu">View Trip History</span>
+                  </a>
+              </li>
+
+              <!-- Link to Passenger Take a Trip -->
+              <li>
+                  <a href="{{ url_for('take_trip', username=username) }}" class="waves-effect">
+                    <i class="fa fa-train fa-fw" aria-hidden="true"></i>
+                    <span class="hide-menu">Take a Trip</span>
+                  </a>
+              </li>
+
+              <!-- Link to Logout -->
+              <li>
+                  <a href="{{ url_for('login') }}" class="waves-effect">
+                    <i class="fa fa-arrow-left fa-fw" aria-hidden="true"></i>
+                    <span class="hide-menu">Logout</span>
+                  </a>
+              </li>
+
+          </ul>
+
+      </div>
+  </div>
+
+  <!-- Page Content -->
+  <div id="page-wrapper">
+      <div class="container-fluid">
+          <div class="row bg-title"></div>
+
+          <div id="block"> <!-- Start Specialized Functionality For Passenger View Trips -->
+
+            <div id="wrapper">
+                <div id="page-wrapper">
+                    <div class="container-fluid">
+
+                        <div class="row"> <!-- Start First Row -->
+                            <div class="col-sm-12">
+                                <div class="white-box form">
+                                    <h3 class="box-title">Filter</h3>
+
+                                    {% if filterError %}
+                                      <p class=error><strong>Error:</strong> {{ filterError }} <!-- Flash Error Message For Invalid Actions Or Failed Filters -->
+                                    {% elif note %}
+                                      <p class=error><strong>Note:</strong> {{ note }} <!-- Flash Note Regarding No Trips -->
+                                    {% endif %}
+
+                                    <form method="POST" id="filters">
+                                      <div style="dislay:inline-block">
+
+                                        <!-- Div For Start Time Filer -->
+                                        <div id="startDiv" style="float:left; width:40%; margin-right:10%">
+                                          <p>Start Time</p>
+                                          <input type="datetime-local" name="startTime" id="startTime" step="1" class="validate show-if-active" required="" aria-required="true"/>
+                                        </div>
+
+                                        <!-- Div For End Time Filter -->
+                                        <div id="endDiv" style="float:left; width:40%">
+                                          <p>End Time</p>
+                                          <input type="datetime-local" name="endTime" id="endTime" step="1" class="validate show-if-active" required="" aria-required="true"/>
+                                        </div>
+                                      </div><br>
+
+                                      <input type="submit" value="Update" name="update" class="update" id="update"/>
+                                      <!-- Redirect to Flask Backend to Update List of Trips Meeting Time Criteria -->
+                                    </form>
+
+                                    <form method="POST" id="reset_Form">
+                                      <input type="submit" value="Reset" name="reset" class="reset" id="reset"/>
+                                      <!-- Redirect to Flask Backend to Reset List to Original List of Trips -->
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div> <!-- End First Row (Filters) -->
+
+                        <div class="row"> <!-- Start Second Row -->
+
+                            <div class="col-sm-12">
+                                <div class="white-box form">
+                                    <h3 class="box-title">Trip History</h3>
+
+                                        {% if loadError %}
+                                          <p class=error><strong>Error:</strong> {{ loadError }} <!-- Flash Error Message if Trips Can't Load -->
+                                        {% endif %}
+
+                                        <form method="GET" id="pass_trips">
+
+                                            <div class="table-responsive">
+                                              <table class="table" id="table">
+                                                  <thead>
+
+                                                      <tr>
+                                                          <th style="width:30%; text-align:center">Time</th>
+                                                          <th style="width:14%; text-align:center">Source</th>
+                                                          <th style="width:14%; text-align:center">Destination</th>
+                                                          <th style="width:12%; text-align:center">Fare Paid</th>
+                                                          <th style="width:30%; text-align:center">Card #</th>
+                                                      </tr>
+
+                                                  </thead>
+                                                </table>
+                                              </div>
+
+                                              <div class="table-responsive" style="max-height:300px; overflow-y:scroll">
+                                                <table class="table" id="table">
+                                                  <tbody>
+
+                                                    {% for item in tripList %} <!-- Iterate Through List of Trips -->
+                                                      <tr>
+                                                        <td style="width:30%; text-align:center" id="time">{{ item[0] }}</td>
+                                                        <td style="width:14%; text-align:center" id="source">{{ item[1] }}</td>
+                                                        <td style="width:14%; text-align:center" id="destination">{{ item[2] }}</td>
+                                                        <td style="width:12%; text-align:center" id="fairPaid">${{ item[3] }}</td>
+                                                        <td style="width:30%; text-align:center" id="cardNum">{{ item[4] }}</td>
+                                                      </tr>
+                                                    {% endfor %}
+
+                                                  </tbody>
+                                              </table>
+                                            </div>
+                                        </form>
+                                </div>
+                            </div>
+                        </div> <!-- End Second Row (Table of Trips) -->
+                    </div> <!-- End Outer Container -->
+                </div>
+            </div>
+
+          </div> <!-- End specialized functionality for passenger breezecard -->
+
+        </div>
+
+        <footer class="footer text-center"></footer>
+    </div>
+
+{% endblock %}

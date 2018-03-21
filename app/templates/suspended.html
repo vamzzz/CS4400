@@ -1,0 +1,71 @@
+<!-- Suspended Breezecards HTML - Subclass From Admin Dashboard Template  -->
+
+{% extends "admin_dashboard.html" %}
+{% block card %}
+
+  <div id="wrapper">
+
+      <!-- Page Content -->
+      <div id="page-wrapper">
+          <div class="container-fluid">
+
+              <div class="row"> <!-- Start Row -->
+                  <div class="col-sm-12">
+                      <div class="white-box">
+                          <h3 class="box-title">Suspended Cards</h3>
+
+                          {% if error %}
+                            <p class=error><strong>Error:</strong> {{ error }} <!-- Flash Error Message For Invalid Actions -->
+                          {% endif %}
+
+                          <form method="GET" id="suspended_cards">
+
+                            <div class="table-responsive">
+                                <table class="table" id="table">
+                                    <thead>
+
+                                        <tr>
+                                            <th style="width:4%">Select</th>
+                                            <th style="width:15%">Card #</th>
+                                            <th style="width:8%">New Owner</th>
+                                            <th style="width:15%">Date Suspended</th>
+                                            <th style="width:8%">Previous Owner</th>
+                                        </tr>
+
+                                    </thead>
+                                </table>
+                            </div>
+
+                            <div class="table-responseive" style="max-height:300px; overflow-y:scroll">
+                              <table class="table" id="table">
+                                    <tbody>
+
+                                      {% for item in suspendedList %} <!-- Iterate Through List of Suspended Cards -->
+                                        <tr>
+                                          <td style="width:4%; text-align:center"><input type="radio" name="selected_suspended" value="{{item[0], item[1], item[3]}}" id="selected_suspended" style="margin-right:15px"/></td>
+                                          <td style="width:15%; text-align:center" id="cardNum" name="cardNum">{{ item[0] }}</td>
+                                          <td style="width:8%; text-align:center" id="newOwner" name="newOwner">{{ item[1] }}</td>
+                                          <td style="width:15%; text-align:center" id="dateSuspended" name="dateSuspended">{{ item[2] }}</td>
+                                          <td style="width:8%; text-align:center" id="prevOwner" name="prevOwner">{{ item[3] }}</td>
+                                        </tr>
+                                      {% endfor %}
+
+                                    </tbody>
+                                </table>
+                            </div><br>
+
+                          <input type="submit" class="top-button" id="top-button" name="top-button" value="Assign Selected Card to New Owner"><br/>
+                          <!-- Redirect to Flask Backend to Check if Previous Owner Has More Than One Card, Generate New One if Not, Assign Card to New Owner, And Refresh List -->
+
+                          <input type="submit" class="bottom-button" id=bottom-button name="bottom-button" value="Assign Selected Card to Previous Owner">
+                          <!-- Redirect to Flask Backend to Give Previous Owner Card And Refresh List -->
+
+                        </form>
+                      </div>
+                  </div>
+              </div> <!-- End Row -->
+          </div>
+      </div>
+  </div>
+
+{% endblock %}

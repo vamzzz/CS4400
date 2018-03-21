@@ -1,0 +1,107 @@
+<!-- Passenger Flow Report HTML - Subclass From Admin Dashboard Template  -->
+
+{% extends "admin_dashboard.html" %}
+{% block card %}
+
+  <div id="wrapper">
+      <!-- Page Content -->
+      <div id="page-wrapper">
+          <div class="container-fluid">
+
+              <div class="row"> <!-- Start First Row - (Filters) -->
+                <div class="col-sm-12">
+                    <div class="white-box form">
+                        <h3 class="box-title">Filter</h3>
+
+                        {% if filterError %}
+                          <p class=error><strong>Error:</strong> {{ filterError }} <!-- Flash Error Message For Invalid Actions Or Failed Filter -->
+                        {% endif %}
+
+                        <form method="POST" id="filters">
+                          <div style="dislay:inline">
+
+                            <!-- Start Time Div -->
+                            <div id="startDiv" style="float:left; margin-right:15%">
+                              <p>Start Time</p>
+                              <input type="datetime-local" name="startTime" id="startTime" step="1" class="validate show-if-active"/>
+                              <!-- Not Required if User Doesn't Want Lower Bound Constraint For Times -->
+                            </div>
+
+                            <!-- End Time Div -->
+                            <div id="endDiv" style="float:left">
+                              <p>End Time</p>
+                              <input type="datetime-local" name="endTime" id="endTime" step="1" class="validate show-if-active"/>
+                              <!-- Not Required if User Doesn't Want Upper Bound Constraint For Times -->
+                            </div>
+
+                          </div>
+
+                          <input type="submit" value="Update" name="update" class="update" id="update"/>
+                          <!-- Redirects to Flask Backend to Show Station Flows Within Time Interval -->
+                        </form>
+
+                        <form method="POST" id="reset_form">
+                          <input type="submit" value="Reset" name="reset" class="reset" id="reset"/>
+                          <!-- Redirects to Flask Backend to Reset List to Original Flows -->
+                        </form>
+
+                    </div>
+                </div>
+              </div> <!-- End First Row -->
+
+              <div class="row"> <!-- Start Second Row - (Flow Reports) -->
+                <div class="col-sm-12">
+                    <div class="white-box form">
+                        <h3 class="box-title">Passenger Flow Report</h3>
+
+                        {% if loadError %}
+                          <p class=error><strong>Error:</strong> {{ loadError }} <!-- Flash Error Message For Failed Load For Flow Reports -->
+                        {% endif %}
+
+                        <form method="GET" id="reports">
+                          <div class="table-responsive">
+                            <table class="table" id="table">
+                                <thead>
+
+                                    <tr>
+                                        <th style="width:20%">Station Name</th>
+                                        <th style="width:20%; text-align:center"># Pass In</th>
+                                        <th style="width:20%; text-align:center"># Pass Out</th>
+                                        <th style="width:15%; text-align:center">Revenue</th>
+                                        <th style="width:20%; text-align:center">Flow</th>
+                                    </tr>
+
+                                </thead>
+                            </table>
+                          </div>
+
+                          <div class="table-responsive" style="max-height:300px; overflow-y:scroll">
+                            <table class="table" id="table">
+                                <tbody>
+
+                                  {% for item in flowList %} <!-- Iterate Through List of Flow Reports -->
+                                    <tr>
+                                      <td style="width:20%" id="stationName">{{ item[0] }}</td>
+                                      <td style="width:20%; text-align:center" id="passIn">{{ item[1] }}</td>
+                                      <td style="width:20%; text-align:center" id="passOut">{{ item[2] }}</td>
+                                      <td style="width:15%; text-align:center" id="revenue">${{ item[4] }}</td>
+                                      <td style="width:20%; text-align:center" id="flow">{{ item[3] }}</td>
+                                    </tr>
+                                  {% endfor %}
+
+                                </tbody>
+                            </table>
+                          </div>
+
+                        </form>
+
+                    </div>
+                </div>
+              </div> <!-- End Second Row -->
+
+          </div>
+          <!-- End Container -->
+      </div>
+  </div>
+
+{% endblock %}

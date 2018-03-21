@@ -1,0 +1,99 @@
+<!-- "Superclass" - Login Template For Login And Registration Pages -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <title>Marta</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/marta.ico') }}" type="image/x-icon"> <!-- Marta Tab Icon -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+  </head>
+
+  <body>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.7/jquery.validate.min.js"></script>
+    <div class="login-page">
+      <div class="form">
+        {% block card %}{% endblock %} <!-- Container For Subclass HTML Code From Login And Registration Pages -->
+      </div>
+    </div>
+  </body>
+
+  <script>
+
+    // Function Adds Spaces Between Every Four Digits - Easier Readability
+      $('#breezecard').on('keyup', function() {
+        var foo = $(this).val().split(" ").join("");
+        if (foo.length > 0) {
+          foo = foo.match(new RegExp('.{1,4}', 'g')).join(" ");
+        }
+        $(this).val(foo);
+      });
+
+      // Array To Hold First Password Input
+      var pass = new Array("");
+
+      // User Selects "Have Breezecard" Option
+      // Function Displays Input For Breezecard Number - Makes It Required
+      $(document).ready(function(){
+        $("#haveBreezecard").click(function(){
+          if ($(this).is(":checked")) {
+            $("#breezecard").show("fast","linear").prop("required", true);
+          }
+        });
+      });
+
+      // User Selects "Need"Breezecard" Option
+      // Function Hides Input For Breezecard Number - Makes It Not Required
+      $(document).ready(function(){
+        $("#needBreezecard").click(function(){
+          if ($(this).is(":checked")) {
+            $("#breezecard").hide("fast","linear").prop("required", false);
+          }
+        });
+      });
+
+      // Function Ensures Both Password Inputs Are Equal
+      // Displays Validation Message If They're Not
+      $(document).ready(function() {
+        $("#password").keyup(function() {
+          $("#confirm_password")[0].setCustomValidity("");
+          var pass = document.getElementById("password").value;
+          var confirm = document.getElementById("confirm_password").value;
+          // only check if confirm password has something in it
+          if (confirm.length > 0) {
+            if (pass.length < confirm.length) {
+              $("#confirm_password")[0].setCustomValidity("Confirm Password Too Long For Password");
+            } else if (pass.length > confirm.length) {
+              $("#confirm_password")[0].setCustomValidity("Confirm Password Too Short For Password");
+            } else if (pass != confirm) {
+              $("#confirm_password")[0].setCustomValidity("Confirm Password Must Match Password");
+            } else {
+              $("#confirm_password")[0].setCustomValidity("");
+            }
+          }
+        });
+
+        $("#confirm_password").keyup(function() {
+          $(this)[0].setCustomValidity("");
+          var pass = document.getElementById("password").value;
+          var confirm = document.getElementById("confirm_password").value;
+          // only check if confirm password has something in it
+          if (confirm.length > 0) {
+            if (pass.length < confirm.length) {
+              $(this)[0].setCustomValidity("Confirm Password Too Long For Password");
+            } else if (pass.length > confirm.length) {
+              $(this)[0].setCustomValidity("Confirm Password Too Short For Password");
+            } else if (pass != confirm) {
+              $(this)[0].setCustomValidity("Confirm Password Must Match Password");
+            } else {
+              $(this)[0].setCustomValidity("");
+            }
+          }
+        });
+      });
+
+  </script>
+
+</html>

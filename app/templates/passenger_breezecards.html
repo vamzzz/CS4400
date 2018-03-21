@@ -1,0 +1,172 @@
+<!-- Passenger Breezecards HTML - Subclass From Passenger Dashboard Template  -->
+
+{% extends "pass_dash_template.html" %}
+{% block card %}
+
+  <!-- Left Navigation Bar -->
+  <div class="navbar-default sidebar" role="navigation">
+      <div class="sidebar-nav navbar-collapse slimscrollsidebar">
+          <ul class="nav" id="side-menu">
+
+            <!-- Link to Passenger Breezecards -->
+            <li style="padding: 10px 0 0;">
+                <a href="{{ url_for('pass_breezecards', username=username) }}" class="waves-effect">
+                  <i class="fa fa-credit-card fa-fw" aria-hidden="true"></i>
+                  <span class="hide-menu">Breeze Cards</span>
+                </a>
+            </li>
+
+            <!-- Link to Passenger Trip History -->
+            <li>
+                <a href="{{ url_for('view_trips', username=username) }}" class="waves-effect">
+                  <i class="fa fa-calendar fa-fw" aria-hidden="true"></i>
+                  <span class="hide-menu">View Trip History</span>
+                </a>
+            </li>
+
+            <!-- Link to Passenger Take a Trip -->
+            <li>
+                <a href="{{ url_for('take_trip', username=username) }}" class="waves-effect">
+                  <i class="fa fa-train fa-fw" aria-hidden="true"></i>
+                  <span class="hide-menu">Take a Trip</span>
+                </a>
+            </li>
+
+            <!-- Link to Logout -->
+            <li>
+                <a href="{{ url_for('login') }}" class="waves-effect">
+                  <i class="fa fa-arrow-left fa-fw" aria-hidden="true"></i>
+                  <span class="hide-menu">Logout</span>
+                </a>
+            </li>
+
+          </ul>
+
+      </div>
+  </div>
+
+  <!-- Page Content -->
+  <div id="page-wrapper">
+      <div class="container-fluid">
+          <div class="row bg-title"></div>
+
+            <div id="block"> <!-- Start specialized functionality for passenger breezecard -->
+              <div id="wrapper">
+
+                  <!-- Page Content -->
+                  <div id="page-wrapper">
+                      <div class="container-fluid">
+                          <div class="row">
+
+                              <div class="col-sm-12">
+                                  <div class="white-box">
+
+                                      <!-- Create Table With List of User's Breezecards, Minus Suspended -->
+                                      <h3 class="box-title">Active Breeze Cards</h3>
+                                      <p>*** Suspended Cards Aren't Shown ***</p>
+
+                                      {% if removeError %}
+                                        <p class=error><strong>Error:</strong> {{ removeError }} <!-- Flash Error Message For Invalid Actions -->
+                                      {% elif tableNote %}
+                                        <p class=error><strong>Note:</strong> {{ tableNote }} <!-- Flash Message That User Has No Active Cards -->
+                                      {% endif %}
+
+                                      <form method="GET" id="pass_breezecards"> <!-- GET Form That Retrieves Breezecards -->
+
+                                      <div class="table-responsive">
+                                          <table class="table" id="table">
+                                              <thead>
+
+                                                  <tr>
+                                                      <th style="width:10%; text-align:center">Select</th> <!-- Column of Radio Buttons to Select Specific Breezecard -->
+                                                      <th style="width:10%; text-align:center">Card #</th>
+                                                      <th style="width:10%; text-align:center">Value</th> <!-- Monetary Amount on Breezecard -->
+                                                  </tr>
+
+                                              </thead>
+                                            </table>
+                                          </div>
+
+                                          <div class="table-responsive" style="max-height:300px; overflow-y:scroll">
+                                            <table class="table" id="table">
+
+                                              <tbody>
+
+                                                {% for item in breezecardList %} <!-- Iterate Through Passed in List of Breezecards -->
+                                                  <tr>
+                                                    <td style="width:10%; text-align:center"><input type="radio" name="removed_breezecard" value="{{item[0]}}" id="removed_breezecard" style="margin-right:15px"/></td>
+                                                    <td style="width:10%; text-align:center" id="cardNum">{{ item[0] }}</td>
+                                                    <td style="width:10%; text-align:center" id="value">${{ item[1] }}</td>
+                                                  </tr>
+                                                {% endfor %}
+
+                                              </tbody>
+                                          </table>
+                                        </div>
+
+                                        <input type="submit" value="Remove Selected Card" name="removeCard" class="removeCard" id="removeCard"/>
+                                        <!-- Changes Form to POST And Redirects to Flask Backend to Update DB And Frontend Table -->
+
+                                      </form>
+                                    </div>
+                                  </div>
+                                </div> <!-- End First Row -->
+
+                                <div class="row">
+
+                                  <!-- Add New Breezecard to Account -->
+                                  <div class="col-sm-6">
+                                    <div class="white-box">
+                                      <h3 class="box-title">Add Breezecard</h3>
+
+                                      {% if addNote %}
+                                        <p class=error><strong>Note:</strong> {{ addNote }} <!-- Flash Note Message to User -->
+                                      {% elif addError %}
+                                        <p class=error><strong>Error:</strong> {{ addError }} <!-- Flash Error For Invalid/Failed Actions -->
+                                      {% endif %}
+
+                                      <div class="form" id="newCard">
+                                        <form id="add_breezecard" method="POST">
+                                          <input type="text" placeholder="Enter Breezecard Number" name="addedCardNumber" id="addedCardNumber" class="validate show-if-active" minlength="19" maxlength="19" pattern="[0-9\s]{19}" title="Must Be 16 Digit Number" required="" aria-required="true"/>
+                                          <input type="submit" value="Add Card" name="addCard" class="addCard" id="addCard"/>
+                                          <!-- Redirects to Flask Backend to Add Card to DB And Update Frontend Table -->
+
+                                        </form>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div class="col-sm-6">
+                                    <div class="white-box">
+
+                                      <!-- Add Money Value to Specified Card -->
+
+                                      <h3 class="box-title">Add Value To Selected Card</h3>
+
+                                      {% if valueError %}
+                                        <p class=error><strong>Error:</strong> {{ valueError }} <!-- Flash Error Message For Invalid Actions -->
+                                      {% endif %}
+
+                                      <div class="form" id="cardValue">
+                                        <form method="POST" id="money_value">
+                                          <input type="text" placeholder="Enter Or Select Breezecard Number" name="valueBreezecard" id="valueBreezecard" class="validate show-if-active" minlength="19" maxlength="19" pattern="[0-9\s]{19}" title="Must Be 16 Digit Number" required="" aria-required="true"/>
+                                          <input type="text" placeholder="Enter Credit Card Number" name="credit_card" id="credit_card" class="validate show-if-active" minlength="19" maxlength="19" pattern="[0-9\s]{19}" title="Must Be 16 Digit Number" required="" aria-required="true"/>
+                                          <input type="number" placeholder="Enter Value Amount" name="value" id="value" class="validate show-if-active" min="0.00" max="1000.00" step="0.01" title="Value Must Be Between 0.00 And 1000.00" required="" aria-required="true"/>
+                                          <input type="submit" value="Add Value" name="addValue" class="addValue" id="addValue"/>
+                                          <!-- Redirects to Flask Backend to Add Value to Card And Update Frontend Table -->
+
+                                        </form>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+            </div> <!-- End specialized functionality for passenger breezecard -->
+
+          <footer class="footer text-center"></footer>
+      </div>
+  </div>
+
+{% endblock %}

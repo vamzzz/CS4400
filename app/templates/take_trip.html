@@ -1,0 +1,240 @@
+
+
+{% extends "pass_dash_template.html" %}
+{% block card %}
+
+  <div class="navbar-default sidebar" role="navigation">
+      <div class="sidebar-nav navbar-collapse slimscrollsidebar">
+          <ul class="nav" id="side-menu">
+
+            <!-- Link to Passenger Breezecards -->
+            <li style="padding: 10px 0 0;">
+                <a href="{{ url_for('pass_breezecards', username=username) }}" class="waves-effect">
+                  <i class="fa fa-credit-card fa-fw" aria-hidden="true"></i>
+                  <span class="hide-menu">Breeze Cards</span>
+                </a>
+            </li>
+
+            <!-- Link to Passenger Trip History -->
+            <li>
+                <a href="{{ url_for('view_trips', username=username) }}" class="waves-effect">
+                  <i class="fa fa-calendar fa-fw" aria-hidden="true"></i>
+                  <span class="hide-menu">View Trip History</span>
+                </a>
+            </li>
+
+            <!-- Link to Passenger Take a Trip -->
+            <li>
+                <a href="{{ url_for('take_trip', username=username) }}" class="waves-effect">
+                  <i class="fa fa-train fa-fw" aria-hidden="true"></i>
+                  <span class="hide-menu">Take a Trip</span>
+                </a>
+            </li>
+
+            <!-- Link to Logout -->
+            <li>
+                <a href="{{ url_for('login') }}" class="waves-effect">
+                  <i class="fa fa-arrow-left fa-fw" aria-hidden="true"></i>
+                  <span class="hide-menu">Logout</span>
+                </a>
+            </li>
+
+          </ul>
+
+      </div>
+  </div>
+
+  <!-- Page Content -->
+  <div id="page-wrapper">
+      <div class="container-fluid">
+          <div class="row bg-title"></div>
+
+          <div id="block"> <!-- Start Specialized Functionality For Passenger Take a Trip -->
+            <div id="wrapper">
+                <div id="page-wrapper">
+                    <div class="container-fluid">
+
+                        {% if showEndStations %} <!-- User is in The Middle of a Trip - Show End Stations of Same Type -->
+                          <div class="row"> <!-- Start First Row - (Stations and/or Breezecards) -->
+                            <form method="GET" id="end_stations">
+                              <div class="col-sm-12">
+                                  <div class="white-box form">
+                                      <h3 class="box-title">End Stations</h3>
+
+                                      {% if error %}
+                                        <p class=error><strong>Error:</strong> {{ error }}
+                                      {% endif %}
+
+                                        <div class="table-responsive">
+                                          <table class="table" id="table">
+                                              <thead>
+
+                                                  <tr>
+                                                      <th style="width:10%">Select</th>
+                                                      <th style="width:15%">Stop ID</th>
+                                                      <th style="width:15%">Stop Name</th>
+                                                      <th style="width:10%">Enter Fare</th>
+                                                      <th style="width:10%">Status</th>
+                                                      <th style="width:15%">Type of Station</th>
+                                                      <th style="width:15%">Intersection</th>
+                                                  </tr>
+
+                                              </thead>
+                                          </table>
+                                        </div>
+
+                                        <div class="table-responsive" style="max-height:300px; overflow-y:scroll">
+                                          <table class="table" id="table">
+                                              <tbody>
+
+                                                {% for item in stationList %} <!-- Iterate Through List of Possible Ending Stations -->
+                                                  <tr>
+
+                                                    {% if item[6] %} <!-- True or False value in row -->
+                                                      <!-- Station is Open - Can Select -->
+                                                      <td style="width:10%"><input type="radio" name="selected_station" value="{{item[0]}}" id="selected_station" style="margin-right:5px"/></td>
+                                                    {% else %}
+                                                      <!-- Station is Close - Cannot Select -->
+                                                      <td style="width:10%"><input type="radio" style="margin-right:15px" disabled="true"/></td>
+                                                    {% endif %}
+
+                                                    <td id="stopID" style="width:15%">{{ item[0] }}</td>
+                                                    <td id="stopName" style="width:15%">{{ item[1] }}</td>
+                                                    <td id="enterFare" style="width:10%">${{ item[2] }}</td>
+                                                    <td id="status" style="width:10%">{{ item[3] }}</td>
+                                                    <td id="typeStation" style="width:15%">{{ item[4] }}</td>
+                                                    <td id="intersection" style="width:15%">{{ item[5] }}</td>
+                                                  </tr>
+                                                {% endfor %}
+
+                                              </tbody>
+                                          </table>
+                                        </div><br>
+                                        <input type="submit" value="End This Trip" name="endTrip" class="endTrip" id="endTrip"/>
+                                        <!-- Redirect to Flask Backend to End a Trip at Selected Station - Update Frontend to Show Start Stations Now -->
+                                    </div>
+                                  </div>
+                              </form>
+                            </div>
+
+
+                        {% else %} <!-- User is Not in Trip - Show Starting Stations And Active Breezecards -->
+                          <div class="row">
+                              <form method="GET" id="trips_and_cards">
+                                <div class="col-sm-12">
+                                    <div class="white-box form">
+                                        <h3 class="box-title">Start Stations</h3>
+
+                                        {% if error %}
+                                          <p class=error><strong>Error:</strong> {{ error }}
+                                        {% endif %}
+
+                                          <div class="table-responsive">
+                                            <table class="table" id="table">
+                                                <thead>
+
+                                                    <tr>
+                                                        <th style="width:10%">Select</th>
+                                                        <th style="width:15%">Stop ID</th>
+                                                        <th style="width:15%">Stop Name</th>
+                                                        <th style="width:10%">Enter Fare</th>
+                                                        <th style="width:10%">Status</th>
+                                                        <th style="width:15%">Type of Station</th>
+                                                        <th style="width:15%">Intersection</th>
+                                                    </tr>
+
+                                                </thead>
+                                            </table>
+                                          </div>
+
+                                          <div class="table-responsive" style="max-height:300px; overflow-y:scroll">
+                                            <table class="table" id="table">
+                                                <tbody>
+
+                                                  {% for item in stationList %} <!-- Iterate Through All Stations -->
+                                                    <tr>
+
+                                                      {% if item[6] %} <!-- True or False value in row -->
+                                                        <!-- Station is Open - Can Select -->
+                                                        <td style="width:10%"><input type="radio" name="selected_station" value="{{item[0], item[2]}}" id="selected_station" style="margin-right:5px"/></td>
+                                                      {% else %}
+                                                        <!-- Station is Closed - Cannot Select -->
+                                                        <td style="width:10%"><input type="radio" style="margin-right:15px" disabled="true"/></td>
+                                                      {% endif %}
+
+                                                      <td id="stopID" style="width:15%">{{ item[0] }}</td>
+                                                      <td id="stopName" style="width:15%">{{ item[1] }}</td>
+                                                      <td id="enterFare" style="width:10%">${{ item[2] }}</td>
+                                                      <td id="status" style="width:10%">{{ item[3] }}</td>
+                                                      <td id="typeStation" style="width:15%">{{ item[4] }}</td>
+                                                      <td id="intersection" style="width:15%">{{ item[5] }}</td>
+                                                    </tr>
+                                                  {% endfor %}
+
+                                                </tbody>
+                                            </table>
+                                          </div>
+                                    </div>
+                                </div>
+                              </div>
+
+                              <div class="row">
+                                <!-- Start breezecard Column -->
+                                <div class="col-sm-6">
+                                    <div class="white-box form">
+                                        <h3 class="box-title">Valid Breezecards</h3>
+
+                                        {% if tableNote %}
+                                          <p class=error><strong>Error:</strong> {{ tableNote }}
+                                        {% endif %}
+
+                                        <form method="GET" id="valid_breezecards">
+                                          <div class="table-responsive">
+                                            <table class="table" id="table">
+                                              <thead>
+
+                                                  <tr>
+                                                      <th>Select</th>
+                                                      <th style="width:50%">Card #</th>
+                                                      <th style="width:30%">Value</th>
+                                                  </tr>
+
+                                              </thead>
+                                            </table>
+                                          </div>
+
+                                          <div class="table-responsive">
+                                            <table class="table" id="table" style="max-height:300px; overflow-y:scroll">
+                                              <tbody>
+
+                                                {% for item in validBreezecards %} <!-- Iterate Through All Active Breezecards -->
+                                                  <tr>
+                                                    <td><input type="radio" name="selected_breezecard" value="{{item[0], item[1]}}" id="selected_breezecard" style="margin-right:15px"/></td>
+                                                    <td style="width:50%" id="cardNum">{{ item[0] }}</td>
+                                                    <td style="width:30%" id="value">{{ item[1] }}</td>
+                                                  </tr>
+                                                {% endfor %}
+
+                                              </tbody>
+                                            </table>
+                                          </div>
+                                          <input type="submit" value="Start This Trip" name="startTrip" class="startTrip" id="startTrip"/>
+                                          <!-- Redirect to Flask Backend to Start a Trip at Selected Station With Selected Breezecard - Update Frontend to Show End Stations Now -->
+                                        </form>
+                                    </div>
+                                </div> <!-- End breezecard column -->
+                              </form>
+                            {% endif %}
+                          </div>
+
+                    </div>
+                </div>
+            </div>
+
+          </div> <!-- End Specialized Functionality For Passenger Take a Trip -->
+
+          <footer class="footer text-center"></footer>
+      </div>
+    </div>
+
+{% endblock %}

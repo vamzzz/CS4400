@@ -1,0 +1,167 @@
+<!-- Admin Breezecards HTML - Subclass From Admin Dashboard Template  -->
+
+{% extends "admin_dashboard.html" %}
+{% block card %}
+  <div id="wrapper">
+      <!-- Page Content -->
+      <div id="page-wrapper">
+          <div class="container-fluid">
+
+              <div class="row"> <!-- Start First Row - (Search/Filter) -->
+                  <div class="col-sm-12">
+                      <div class="white-box form">
+                          <h3 class="box-title">Search/Filter</h3>
+
+                          {% if filterError %}
+                            <p class=error><strong>Error:</strong> {{ filterError }} <!-- Flash Error Message For Invalid Actions Or Failed Filter(s) -->
+                          {% elif filterNote %}
+                            <p class=error><strong>Note:</strong> {{ filterNote }} <!-- Flash Note That No Filters Were Applied -->
+                          {% endif %}
+
+                          <form method="POST" id="filters">
+
+                            <!-- Same Line Div Holding Owner Input and Card Number Input -->
+                            <div style="display:inline-block; width:100%">
+                              <div id="ownerDiv" style="float:left; width:40%; margin-right:10%">
+                                <p>Owner</p>
+                                <input type="text" placeholder="Enter Owner Username" name="searchOwner" id="searchOwner" class="validate show-if-active"/>
+                              </div>
+
+                              <div id="numberDiv" style="float:left; width:40%">
+                                <p>Card Number</p>
+                                <input type="text" placeholder="Enter Breezecard Number" name="searchCard" id="searchCard" class="validate show-if-active" minlength="19" maxlength="19" pattern="[0-9\s]{19}" title="Must Be 16 Digit Number"/>
+                              </div>
+                            </div><br>
+
+                            <!-- Same Line Div Holding Lower Value Input And Upper Value Input -->
+                            <div style="dislay:inline-block">
+                              <div id="lowerDiv" style="float:left; width:40%; margin-right:10%">
+                                <p>Lower Limit Value</p>
+                                <input type="number" placeholder="Enter Value Amount" name="bottomValue" id="bottomValue" class="validate show-if-active" min="0.00" max="1000.00" step="0.01" title="Value Must Be Between 0.00 And 1000.00"/>
+                              </div>
+
+                              <div id="upperDiv" style="float:left; width:40%">
+                                <p>Upper Limit Value</p>
+                                <input type="number" placeholder="Enter Value Amount" name="topValue" id="topValue" class="validate show-if-active" min="0.00" max="1000.00" step="0.01" title="Value Must Be Between 0.00 And 1000.00"/>
+                              </div>
+                            </div><br>
+
+                            <!-- Checkbox to Show Suspended Cards as Well as Active Cards -->
+                            <input style="margin-bottom:0px; margin-right:15px; width:15%; vertical-align:middle; text-align:center" id="showSuspended" class="showSuspended" name="showSuspended" type="checkbox"/>
+                            <p>Show Suspended Cards (Will Show Both Suspended And Active)</p>
+                            <input type="submit" value="Update Filter" name="update" class="update" id="update"/>
+                            <!-- Redirects to Flask Backend to Perform Filters Through Query And Update Frontend Table -->
+
+                          </form>
+
+                          <form method="POST" id="reset_Form">
+                            <input type="submit" value="Reset" name="reset" class="reset" id="reset"/>
+                            <!-- Redirects to Flask Backend to Reset Table to Original List of Active Breezecards -->
+                          </form>
+
+                      </div>
+                  </div>
+              </div> <!-- End First Row -->
+
+              <div class="row"> <!-- Start Second Row - (All Breezecards) -->
+                  <div class="col-sm-12">
+                      <div class="white-box">
+                          <h3 class="box-title">Breeze Cards</h3>
+
+                          {% if loadError %}
+                            <p class=error><strong>Error:</strong> {{ loadError }} <!-- Flash Error Message For Failed Load of Breezecards -->
+                          {% elif loadNote %}
+                            <p class=error><strong>Note:</strong> {{ loadNote }} <!-- Flash Message That There Are No Active Breezecards -->
+                          {% endif %}
+
+                          <form method="GET" id="admin_breezecards">
+                            <div class="table-responsive">
+                              <table class="table" id="table">
+                                  <thead>
+
+                                      <tr>
+                                          <th>Select</th>
+                                          <th>Card #</th>
+                                          <th>Value</th>
+                                          <th>Owner</th>
+                                      </tr>
+
+                                  </thead>
+                                </table>
+                              </div>
+
+                              <div class="table-responsive" style="max-height:300px; overflow-y:scroll">
+                                <table class="table" id="table">
+                                  <tbody>
+
+                                    {% for item in breezecardList %} <!-- Iterate Through Each Breezecard in List -->
+                                      <tr>
+                                        <td><input type="radio" name="removed_breezecard" value="{{item[0]}}" id="selected_breezecard" style="margin-right:15px"/></td>
+                                        <td id="cardNum">{{ item[0] }}</td>
+                                        <td id="value">${{ item[1] }}</td>
+                                        <td id="owner">{{ item[2] }}</td>
+                                      </tr>
+                                    {% endfor %}
+
+                                  </tbody>
+                              </table>
+                            </div>
+                          </form>
+
+                      </div>
+                  </div>
+              </div> <!-- End Second Row -->
+
+              <div class="row"> <!-- Start Third Row - (Transfer Card /  Set Value) -->
+                <div class="col-sm-6">
+                  <div class="white-box">
+                    <h3 class="box-title">Transfer Card</h3>
+
+                    {% if transferError %}
+                      <p class=error><strong>Note:</strong> {{ transferError }} <!-- Flash Error Message For Invalid Actions Or Failed to Add Breezecard -->
+                    {% endif %}
+
+                    <div class="form" id="transferCard">
+                      <form id="add_breezecard" method="POST">
+
+                        <input type="text" placeholder="Enter Breezecard Number or Select From List" name="cardNumber" id="cardNumber" class="validate show-if-active" minlength="19" maxlength="19" pattern="[0-9\s]{19}" title="Must Be 16 Digit Number" required="" aria-required="true"/>
+                        <input type="text" placeholder="Enter New Owner Username" name="newOwner" id="newOwner" class="validate show-if-active" required="" aria-required="true"/>
+                        <input type="submit" value="Transfer Card" name="transfer" class="transfer" id="transfer"/>
+
+                      </form>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-sm-6">
+                  <div class="white-box">
+
+                    <h3 class="box-title">Set Value For Selected Card</h3>
+
+                    {% if valueError %}
+                      <p class=error><strong>Error:</strong> {{ valueError }} <!-- Flash Error Message For Invalid Actions Or Failed to Set Value For Breezecard -->
+                    {% endif %}
+
+                    <div class="form" id="newCardValue">
+                      <form method="POST" id="money_value">
+                        <input type="text" placeholder="Enter Breezecard Number Or Select From List" name="breezecard" id="breezecard" class="validate show-if-active" minlength="19" maxlength="19" pattern="[0-9\s]{19}" title="Must Be 16 Digit Number" required="" aria-required="true"/>
+                        <input type="number" placeholder="Enter Value Amount" name="value" id="value" class="validate show-if-active" min="0.00" max="1000.00" step="0.01" title="Value Must Be Between 0.00 And 1000.00" required="" aria-required="true"/>
+                        <input type="submit" value="Set Value of Card" name="setValue" class="setValue" id="setValue"/>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+            </div>
+          </div>
+              <!-- /.row -->
+          <!-- /.container-fluid -->
+      </div>
+      <!-- /#page-wrapper -->
+  </div>
+  <script>
+    window.onload = function() {
+        $("#upperDiv").hide();
+    }
+
+  </script>
+{% endblock %}

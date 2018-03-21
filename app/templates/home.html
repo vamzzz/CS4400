@@ -1,0 +1,27 @@
+<!-- Home Page HTML -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <title>Marta</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/marta.ico') }}" type="image/x-icon"> <!-- Marta Tab Icon -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+  </head>
+
+  <body>
+    <div class="login-page">
+      <div class="form" id="home">
+        <img src="../static/images/marta_logo.png"/> <!-- Home Page Marta Logo -->
+        <br>
+        <button onclick="location.href='/login'">Login</button> <!-- Redirects to Login Screen -->
+        <br>
+        <p class="message">Not registered?</p>
+        <br>
+        <button onclick="location.href='/register'">Create New Account</button> <!-- Redirects to Register Screen -->
+      </div>
+    </div>
+  </body>
+
+</html>

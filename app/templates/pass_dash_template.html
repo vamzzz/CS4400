@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/marta.ico') }}" type="image/x-icon"> <!-- Marta Tab Icon -->
+    <title>Passenger Dashboard</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="../static/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Sidebar CSS -->
+    <link href="../static/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.css" rel="stylesheet">
+    <!-- Table CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/table.css') }}">
+    <!-- Other CSS -->
+    <link href="../static/css/style.css" rel="stylesheet">
+
+    <!-- morris CSS -->
+    <link href="../static/plugins/bower_components/morrisjs/morris.css" rel="stylesheet">
+    <!-- animation CSS -->
+    <link href="../static/css/animate.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <div id="wrapper">
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top m-b-0">
+            <div class="navbar-header"> <a class="navbar-toggle hidden-sm hidden-md hidden-lg " href="javascript:void(0)" data-toggle="collapse" data-target=".navbar-collapse"><i class="fa fa-bars"></i></a>
+                <!-- <div class="top-left-part"><a class="logo" href="index.html"><b><img src="../static/plugins/images/pixeladmin-logo.png"/></b><span class="hidden-xs"><img src="../static/plugins/images/pixeladmin-text.png"/></span></a></div> -->
+                <ul class="nav navbar-top-links navbar-left m-l-20 hidden-xs">
+
+                </ul>
+                <ul class="nav navbar-top-links navbar-left pull-left">
+                    <li>
+                        <a class="profile-pic" href=""><b class="hidden-xs" style="float:left">Welcome</b></a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-header -->
+            <!-- /.navbar-top-links -->
+            <!-- /.navbar-static-side -->
+        </nav>
+        <!-- Left navbar-header -->
+        {% block card %}{% endblock %}
+    </div>
+    <!-- /#wrapper -->
+    <!-- jQuery -->
+    <script src="../static/plugins/bower_components/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../static/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- Menu Plugin JavaScript -->
+    <script src="../static/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.js"></script>
+    <!--slimscroll JavaScript -->
+    <script src="../static/js/jquery.slimscroll.js"></script>
+    <!--Wave Effects -->
+    <script src="../static/js/waves.js"></script>
+    <!--Counter js -->
+    <script src="../static/plugins/bower_components/waypoints/lib/jquery.waypoints.js"></script>
+    <script src="../static/plugins/bower_components/counterup/jquery.counterup.min.js"></script>
+    <!--Morris JavaScript -->
+    <script src="../static/plugins/bower_components/raphael/raphael-min.js"></script>
+    <script src="../static/plugins/bower_components/morrisjs/morris.js"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="../static/js/custom.min.js"></script>
+    <script src="../static/js/dashboard1.js"></script>
+    <script src="../static/plugins/bower_components/toast-master/js/jquery.toast.js"></script>
+
+    <script type="text/javascript">
+
+      $("input[type='radio']").click(function() {
+        var selectedCardNum = $("input[type='radio']:checked").val();
+        $("#valueBreezecard").val(selectedCardNum);
+      });
+
+      // convert GET Breezecard table to POST to handle button click actions
+      $("#pass_breezecards").submit(function() {
+        $("#pass_breezecards").attr("method", "post");
+      });
+
+      $("#pass_trips").submit(function() {
+        $("#pass_trips").attr("method", "post");
+      });
+
+      $("#trips_and_cards").submit(function() {
+        $("#trips_and_cards").attr("method", "post");
+      });
+
+      $("#end_stations").submit(function() {
+        $("#end_stations").attr("method", "post");
+      });
+
+      $('#valueBreezecard').on('keyup', function() {
+        var foo = $(this).val().split(" ").join("");
+        if (foo.length > 0) {
+          foo = foo.match(new RegExp('.{1,4}', 'g')).join(" ");
+        }
+        $(this).val(foo);
+      });
+
+      $('#addedCardNumber').on('keyup', function() {
+        var foo = $(this).val().split(" ").join("");
+        if (foo.length > 0) {
+          foo = foo.match(new RegExp('.{1,4}', 'g')).join(" ");
+        }
+        $(this).val(foo);
+      });
+
+      $('#credit_card').on('keyup', function() {
+        var foo = $(this).val().split(" ").join("");
+        if (foo.length > 0) {
+          foo = foo.match(new RegExp('.{1,4}', 'g')).join(" ");
+        }
+        $(this).val(foo);
+      });
+
+    </script>
+</body>
+
+</html>

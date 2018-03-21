@@ -1,0 +1,18 @@
+<!-- Login Page HTML - Subclass From Login Template -->
+
+{% extends "login_template.html" %}
+{% block card %}
+
+      {% if error %}
+        <p class=error><strong>Error:</strong> {{ error }} <!-- Flash Error Message For Invalid Credentials -->
+      {% endif %}
+      <form id="login_page" method="POST">
+          <input type="username" placeholder="Username" name="username" class="validate" required="" aria-required="true" value="{{ userVal }}"/>
+          <input type="password" placeholder="Password" name="password" class="validate" required="" aria-required="true" value="{{ passVal }}"/>
+          <button value="submit" type="submit">login</button>
+          <!-- Redirect to Flask Backend to Validate Username And Password -->
+      </form>
+      <br>
+      <button onclick="location.href='/'">Back to Home</button> <!-- Redirects Back to Home Page -->
+
+{% endblock %}

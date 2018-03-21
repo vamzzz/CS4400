@@ -1,0 +1,39 @@
+<!-- Registration Page HTML - Subclass For Login Template -->
+
+{% extends "login_template.html" %}
+{% block card %}
+
+    {% if error %}
+      <p class=error><strong>Error:</strong> {{ error }} <!-- Flash Error Message For Invalid Inputs -->
+    {% endif %}
+
+    <form method="POST" id="registration_page">
+        <input type="text" placeholder="Username" name="username" id="username" class="validate" required="" aria-required="true" value="{{ reg_user_val }}"/>
+
+        <input type="email" placeholder="E-mail" name="email" class="validate" required="" aria-required="true" value="{{ reg_email_val }}"/>
+        <!-- Validation Ensures Email Meets Email Requirements (i.e. @, ., characters) -->
+
+        <!-- Ensures Password Inputs Meet Length Requirement -->
+        <input type="password" placeholder="Password" name="password" id="password" class="validate" required="" minlength="8" aria-required="true" value="{{ reg_pass_val }}"/>
+        <input type="password" placeholder="Confirm Password" name="confirm_password" id="confirm_password" class="validate" required="" minlength="8" aria-required="true" value="{{ reg_confirm_val }}"/>
+
+        <label style="float:left; margin-bottom:15px"><input type="radio" id="needBreezecard" name="breezecardCheck" value="need" style="margin:0px 15px 0px 0px; width:auto;" required="">I don't have an existing breezecard</label><br/>
+        <label style="float:left; margin-bottom:15px"><input type="radio" id="haveBreezecard" name="breezecardCheck" value="have" style="margin:0px 15px 0px 0px; width:auto;" required="">I have an existing breezecard</label>
+
+        <!-- Initially Hidden Text Input For Breezecard Number -->
+        <!-- Validation Ensures Minimum Length Requirement is Met -->
+        <input type="text" placeholder="Enter BreezeCard Number" name="breezecard" id="breezecard" class="validate show-if-active" minlength="19" maxlength="19" pattern="[0-9\s]{19}" title="Must Be 16 Digit Number"/>
+
+        <button id="register" value="submit" type="submit">Register</button> <!-- Redirects to Flask Backend to Validate Inputs -->
+    </form>
+    <br>
+    <button onclick="location.href='/'">Back to Home</button> <!-- Redirects Back to Home Page -->
+
+  <!--  Script Hides Breezecard Input Initially -->
+  <script>
+    window.onload = function() {
+        $("#breezecard").hide();
+    }
+  </script>
+
+{% endblock %}
